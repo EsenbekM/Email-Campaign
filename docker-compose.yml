@@ -1,0 +1,62 @@
+version: '3.11'
+
+services:
+  db:
+    image: postgres
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - db_network
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    ports:
+      - "6379:6379"
+    networks:
+      - redis_network
+      - celery_network
+
+  back:
+    build: .
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - db_network
+      - redis_network
+      - celery_network
+
+  celery:
+    build: .
+    command: celery -A email_campaign worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    networks:
+      - redis_network
+      - celery_network
+
+volumes:
+  postgres_data:
+
+networks:
+  db_network:
+    driver: bridge
+  redis_network:
+    driver: bridge
+  celery_network:
+    driver: bridge

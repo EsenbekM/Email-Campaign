@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Campaign Statistics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Daily Campaign Statistics</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Campaign ID</th>
+                <th>Campaign Date</th>
+                <th>Sent</th>
+                <th>Failed</th>
+                <th>Pending</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in stats %}
+            <tr>
+                <td>{{ stat.campaign_id }}</td>
+                <td>{{ stat.campaign_date }}</td>
+                <td>{{ stat.sent }}</td>
+                <td>{{ stat.failed }}</td>
+                <td>{{ stat.pending }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
